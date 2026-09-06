@@ -101,6 +101,18 @@ header{background:white;padding:14px 28px;display:flex;justify-content:space-bet
 .home-tile span{font-size:16px;font-weight:700;}
 .home-tile-exit{background:linear-gradient(135deg,#c0392b,#962d22);}
 
+.home-level{max-width:1000px;margin:0 auto;}
+.home-grid-primary{grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:28px;}
+.home-tile-big{padding:48px 20px;border-radius:16px;}
+.home-tile-big i{font-size:48px;}
+.home-tile-big span{font-size:20px;}
+.home-tile-big small{font-size:12.5px;opacity:.85;font-weight:600;margin-top:2px;}
+.home-tile-pos{background:linear-gradient(135deg,#e67e22,#c0630f);}
+.home-tile-settings{background:linear-gradient(135deg,#34495e,#212f3c);}
+.home-back{background:#ecf0f1;border:none;padding:10px 18px;border-radius:9px;font-weight:700;font-size:13px;color:#555;cursor:pointer;margin-bottom:18px;}
+.home-back:hover{background:#dfe4e6;}
+.home-sub-title{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:22px;}
+
 /* ═══════════ POS - 3 sütunlu ana görünüm ═══════════ */
 .pos-overview{display:flex;gap:16px;height:calc(100vh - 130px);}
 .pos-col{flex:1;background:white;border-radius:12px;padding:14px;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden;}
@@ -118,6 +130,28 @@ header{background:white;padding:14px 28px;display:flex;justify-content:space-bet
 .pos-order-row .porp{font-weight:800;font-size:14px;}
 .pos-order-row.gelal-row{background:linear-gradient(135deg,#6ab04c,#4a7a34);}
 .pos-order-row.paket-row{background:linear-gradient(135deg,#c0392b,#962d22);}
+
+.table-grid-full{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;}
+.pos-order-list-full{max-width:700px;}
+
+/* Gel-Al: numaralı sipariş kutucukları */
+.gelal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;}
+.gelal-slot{aspect-ratio:1;border-radius:14px;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:white;box-shadow:0 3px 8px rgba(0,0,0,.12);position:relative;padding:10px;text-align:center;}
+.gelal-slot .gs-num{font-size:26px;font-weight:800;}
+.gelal-slot .gs-info{font-size:11px;font-weight:600;opacity:.9;}
+.gelal-slot.bos{background:linear-gradient(135deg,#95a5a6,#7f8c8d);}
+.gelal-slot.dolu{background:linear-gradient(135deg,#27ae60,#1e8449);}
+
+/* Caller ID gelen çağrı popup'u */
+.callerid-popup{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#27ae60,#1e8449);color:white;border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 10px 30px rgba(0,0,0,.3);cursor:pointer;z-index:500;animation:cipPulse 1.4s infinite;max-width:320px;}
+@keyframes cipPulse{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.3);}50%{box-shadow:0 10px 40px rgba(39,174,96,.6);}}
+.cip-icon{font-size:28px;flex-shrink:0;}
+.cip-title{font-size:11px;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.5px;}
+.cip-name{font-size:16px;font-weight:800;margin-top:2px;}
+.cip-phone{font-size:12.5px;opacity:.9;}
+.cip-hint{font-size:10.5px;opacity:.8;flex-shrink:0;text-align:right;max-width:70px;}
+.fa-shake{animation:fashake 1s infinite;}
+@keyframes fashake{0%,100%{transform:rotate(0);}20%{transform:rotate(-15deg);}40%{transform:rotate(12deg);}60%{transform:rotate(-8deg);}80%{transform:rotate(6deg);}}
 
 .kcol{flex:1;background:#dfe6e9;border-radius:10px;display:flex;flex-direction:column;min-width:280px;border:1px solid #ced6e0;}
 .khead{padding:14px;font-weight:700;text-transform:uppercase;background:#fff;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;border-bottom:2px solid transparent;}
@@ -442,7 +476,7 @@ input:checked+.slider:before{transform:translateX(24px);}
 <div id="login-overlay" style="display:none;">
   <div class="login-box">
     <h2>🔐 Yönetim Paneli</h2>
-    <p>Dönerci İsmail Mutfak Sistemi</p>
+    <p>Restoran Yönetim Sistemi</p>
     <input type="email" id="panel-email" class="login-input" placeholder="E-posta"
            style="letter-spacing:0;font-size:14px;text-align:left;padding-left:14px;"
            onkeydown="if(event.key==='Enter')document.getElementById('panel-pin').focus()">
@@ -460,80 +494,63 @@ input:checked+.slider:before{transform:translateX(24px);}
 </div>
 <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
 
-<aside>
-  <div class="brand">DÖNERCİ<br><span>MUTFAK PANELİ</span></div>
-  <div class="store-ctrl">
-    <div class="store-ctrl-title">MAĞAZA DURUMU</div>
-    <div class="store-btn-group">
-      <button id="btn-ac" class="sbtn open" onclick="toggleStore(true)"><i class="fas fa-door-open"></i> AÇIK</button>
-      <button id="btn-kp" class="sbtn close" onclick="toggleStoreWithMsg()"><i class="fas fa-door-closed"></i> KAPALI</button>
-    </div>
-  </div>
-  <div class="mi active" onclick="showTab('home-screen',this)"><i class="fas fa-home"></i> Ana Sayfa</div>
-  <div class="mi" onclick="showTab('dashboard',this)"><i class="fas fa-th-large"></i> Sipariş Paneli <span id="pbadge" class="badge">0</span></div>
-  <div class="mi" onclick="showTab('pos-screen',this)"><i class="fas fa-cash-register"></i> POS - Yeni Sipariş</div>
-  <div class="mi" onclick="showTab('courier-panel',this)"><i class="fas fa-motorcycle"></i> Kurye Yönetimi</div>
-  <div class="mi" onclick="showTab('products',this)"><i class="fas fa-hamburger"></i> Menü Yönetimi</div>
-  <div class="mi" onclick="showTab('qr-menu',this)"><i class="fas fa-qrcode"></i> QR Menü Düzenle</div>
-  <div class="mi" onclick="showTab('customers',this)"><i class="fas fa-users"></i> Müşteriler</div>
-  <div class="mi" onclick="showTab('abandoned-carts',this)"><i class="fas fa-shopping-cart"></i> Terk Sepetler <span id="abandon-badge" class="badge" style="display:none;">0</span></div>
-  <div class="mi" onclick="showTab('push-marketing',this)"><i class="fas fa-bullhorn"></i> Pazarlama Push</div>
-
-  <div style="font-size:10px;color:rgba(255,255,255,.35);padding:10px 18px 4px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Pazarlama</div>
-  <div class="mi" onclick="showTab('campaigns',this)"><i class="fas fa-tags"></i> Kampanyalar</div>
-  <div class="mi" onclick="showTab('coupons',this)"><i class="fas fa-ticket-alt"></i> Kuponlar</div>
-  <div class="mi" onclick="showTab('popup-manager',this)"><i class="fas fa-bullhorn"></i> Duyuru & Popup</div>
-  <div class="mi" onclick="showTab('menu-fiyat',this)"><i class="fas fa-lira-sign"></i> Menü Fiyatları</div>
-  <div class="mi" onclick="showTab('vip-settings',this)"><i class="fas fa-crown"></i> VIP & Puan</div>
-
-  <div style="font-size:10px;color:rgba(255,255,255,.35);padding:10px 18px 4px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Bildirimler</div>
-  <div class="mi" onclick="showTab('push-sender',this)"><i class="fas fa-paper-plane"></i> Bildirim Gönder</div>
-  <div class="mi" onclick="showTab('auto-notifs',this)"><i class="fas fa-robot"></i> Otomatik Bildirimler</div>
-  <div class="mi" onclick="showTab('notif-settings',this)"><i class="fas fa-bell"></i> Bildirim Ayarları</div>
-
-  <div style="font-size:10px;color:rgba(255,255,255,.35);padding:10px 18px 4px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Raporlar</div>
-  <div class="mi" onclick="showTab('reports',this)"><i class="fas fa-chart-bar"></i> Raporlar</div>
-  <div class="mi" onclick="showTab('daily-report',this)"><i class="fas fa-receipt"></i> Gün Sonu</div>
-  <div class="mi" onclick="showTab('ciro-takip',this)"><i class="fas fa-coins"></i> Ciro Takibi</div>
-  <div class="mi" onclick="showTab('complaints',this)"><i class="fas fa-exclamation-circle"></i> Şikayetler</div>
-
-  <div style="font-size:10px;color:rgba(255,255,255,.35);padding:10px 18px 4px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Ayarlar</div>
-  <div class="mi" onclick="showTab('settings-hub',this)"><i class="fas fa-cog"></i> ⚙️ Genel Ayarlar</div>
-  <div class="mi" onclick="showTab('store-hours',this)"><i class="fas fa-clock"></i> Çalışma Saati</div>
-  <div class="mi" onclick="showTab('printer-settings',this)"><i class="fas fa-print"></i> Yazıcı Ayarları</div>
-  <div style="flex:1"></div>
-  <div class="mi" onclick="reqNotif()"><i class="fas fa-bell"></i> Bildirim İzni</div>
-  <div style="padding:14px 22px;border-top:1px solid rgba(255,255,255,.1);">
-    <div style="font-size:11px;color:#95a5a6;margin-bottom:6px;">GİRİŞ YAPAN:</div>
-    <div id="admin-email-display" style="font-size:12px;color:#bdc3c7;margin-bottom:8px;word-break:break-all;"></div>
-    <button onclick="logout()" style="width:100%;padding:8px;background:rgba(192,57,43,.3);color:#e74c3c;border:1px solid rgba(192,57,43,.4);border-radius:5px;cursor:pointer;font-weight:bold;font-size:12px;transition:.2s;"
-      onmouseover="this.style.background='rgba(192,57,43,.6)'" onmouseout="this.style.background='rgba(192,57,43,.3)'">
-      <i class="fas fa-sign-out-alt"></i> Çıkış Yap
-    </button>
-  </div>
-  <div class="mi" onclick="location.reload()" style="border-top:1px solid rgba(255,255,255,.1);"><i class="fas fa-sync-alt"></i> Yenile</div>
-</aside>
-
-<main>
+<main style="width:100%;">
   <header>
-    <div class="page-title" id="pghead">Ana Sayfa</div>
-    <div id="sysind" class="sys-status open"><div class="sdot"></div><span id="systxt">Yükleniyor...</span></div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button id="home-fab" onclick="goHomeTab('home-screen')" title="Ana Menü" style="background:var(--dark);color:white;border:none;width:38px;height:38px;border-radius:9px;cursor:pointer;font-size:15px;display:none;align-items:center;justify-content:center;">
+        <i class="fas fa-th-large"></i>
+      </button>
+      <div class="page-title" id="pghead">Ana Sayfa</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="store-btn-group" style="display:flex;gap:6px;">
+        <button id="btn-ac" class="sbtn open" onclick="toggleStore(true)"><i class="fas fa-door-open"></i> AÇIK</button>
+        <button id="btn-kp" class="sbtn close" onclick="toggleStoreWithMsg()"><i class="fas fa-door-closed"></i> KAPALI</button>
+      </div>
+      <div id="sysind" class="sys-status open"><div class="sdot"></div><span id="systxt">Yükleniyor...</span></div>
+      <div style="position:relative;">
+        <button onclick="const m=document.getElementById('account-menu'); m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:1px solid #ddd;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12.5px;color:#555;display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-user-circle"></i> Hesap
+        </button>
+        <div id="account-menu" style="display:none;position:absolute;right:0;top:44px;background:white;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);padding:12px;min-width:200px;z-index:100;">
+          <div style="font-size:11px;color:#999;margin-bottom:4px;">GİRİŞ YAPAN:</div>
+          <div id="admin-email-display" style="font-size:12px;color:#555;margin-bottom:10px;word-break:break-all;"></div>
+          <button onclick="logout()" style="width:100%;padding:8px;background:#fdedec;color:#c0392b;border:1px solid #f5c6c2;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;">
+            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+          </button>
+        </div>
+      </div>
+    </div>
   </header>
 
   <!-- ══════════════════════════════════════════════
        ANA SAYFA (İlk karşılama ekranı)
   ══════════════════════════════════════════════ -->
   <div id="home-screen" class="tab active">
-    <div class="home-grid">
-      <div class="home-tile" onclick="goHomeTab('dashboard')"><i class="fas fa-th-large"></i><span>Sipariş Paneli</span></div>
-      <div class="home-tile" onclick="goHomeTab('pos-screen')"><i class="fas fa-cash-register"></i><span>POS</span></div>
-      <div class="home-tile" onclick="goHomeTab('courier-panel')"><i class="fas fa-motorcycle"></i><span>Kurye Yönetimi</span></div>
-      <div class="home-tile" onclick="goHomeTab('products')"><i class="fas fa-hamburger"></i><span>Menü Yönetimi</span></div>
-      <div class="home-tile" onclick="goHomeTab('customers')"><i class="fas fa-users"></i><span>Müşteriler</span></div>
-      <div class="home-tile" onclick="goHomeTab('reports')"><i class="fas fa-chart-bar"></i><span>Raporlar</span></div>
-      <div class="home-tile" onclick="goHomeTab('daily-report')"><i class="fas fa-receipt"></i><span>Gün Sonu</span></div>
-      <div class="home-tile" onclick="goHomeTab('settings-hub')"><i class="fas fa-cog"></i><span>Ayarlar</span></div>
-      <div class="home-tile home-tile-exit" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Çıkış Yap</span></div>
+    <!-- SEVİYE 1: ANA GRUPLAR -->
+    <div id="home-groups" class="home-level">
+      <div class="home-grid home-grid-primary">
+        <div class="home-tile home-tile-big home-tile-pos" onclick="showHomeGroup('pos')"><i class="fas fa-cash-register"></i><span>POS SATIŞ</span><small>Masalar · Gel Al · Paket Servis</small></div>
+        <div class="home-tile home-tile-big home-tile-settings" onclick="showHomeGroup('ayarlar')"><i class="fas fa-cog"></i><span>AYARLAR</span><small>Ürün · Fiyat · Firma · Bildirim</small></div>
+      </div>
+      <div class="home-grid">
+        <div class="home-tile" onclick="goHomeTab('dashboard')"><i class="fas fa-th-large"></i><span>Sipariş Paneli</span></div>
+        <div class="home-tile" onclick="goHomeTab('courier-panel')"><i class="fas fa-motorcycle"></i><span>Kurye Yönetimi</span></div>
+        <div class="home-tile" onclick="showHomeGroup('pazarlama')"><i class="fas fa-bullhorn"></i><span>Pazarlama</span></div>
+        <div class="home-tile" onclick="showHomeGroup('bildirimler')"><i class="fas fa-bell"></i><span>Bildirimler</span></div>
+        <div class="home-tile" onclick="showHomeGroup('raporlar')"><i class="fas fa-chart-bar"></i><span>Raporlar</span></div>
+        <div class="home-tile" onclick="goHomeTab('qr-menu')"><i class="fas fa-qrcode"></i><span>QR Menü</span></div>
+        <div class="home-tile" onclick="goHomeTab('abandoned-carts')"><i class="fas fa-shopping-cart"></i><span>Terk Sepetler</span></div>
+        <div class="home-tile" onclick="goHomeTab('complaints')"><i class="fas fa-exclamation-circle"></i><span>Şikayetler</span></div>
+        <div class="home-tile home-tile-exit" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Çıkış Yap</span></div>
+      </div>
+    </div>
+
+    <!-- SEVİYE 2: ALT MENÜLER -->
+    <div id="home-sub" class="home-level" style="display:none;">
+      <button class="home-back" onclick="showHomeGroups()"><i class="fas fa-arrow-left"></i> Ana Menü</button>
+      <h2 id="home-sub-title" class="home-sub-title"></h2>
+      <div class="home-grid" id="home-sub-grid"></div>
     </div>
   </div>
 
@@ -558,61 +575,68 @@ input:checked+.slider:before{transform:translateX(24px);}
   <!-- ══════════════════════════════════════════════
        POS - YENİ SİPARİŞ (Masalar / Gel Al / Paket Servis - 3 modül tek ekranda)
   ══════════════════════════════════════════════ -->
-  <div id="pos-screen" class="tab">
+  <!-- ══════════════════════════════════════════════
+       POS SATIŞ — MASALAR (tam ekran)
+  ══════════════════════════════════════════════ -->
+  <div id="pos-masalar" class="tab">
+    <div class="pos-area-tabs" id="pos-area-tabs"></div>
+    <div class="table-grid table-grid-full" id="pos-table-grid"></div>
+  </div>
 
-    <!-- 3 SÜTUNLU ANA GÖRÜNÜM (SambaPOS tarzı) -->
-    <div id="pos-overview" class="pos-overview">
+  <!-- ══════════════════════════════════════════════
+       POS SATIŞ — GEL AL (tam ekran, numaralı kutucuklar)
+  ══════════════════════════════════════════════ -->
+  <div id="pos-gelal" class="tab">
+    <div class="gelal-grid" id="gelal-grid"></div>
+  </div>
 
-      <!-- SÜTUN 1: TÜM MASALAR -->
-      <div class="pos-col">
-        <div class="pos-col-head pos-col-blue"><i class="fas fa-chair"></i> Tüm Masalar</div>
-        <div class="pos-area-tabs" id="pos-area-tabs"></div>
-        <div class="table-grid" id="pos-table-grid"></div>
+  <!-- ══════════════════════════════════════════════
+       POS SATIŞ — PAKET SERVİS & ONLINE (tam ekran)
+  ══════════════════════════════════════════════ -->
+  <div id="pos-paket" class="tab">
+    <div style="display:flex;gap:10px;margin-bottom:16px;max-width:520px;">
+      <input type="tel" id="pos-paket-phone-q" placeholder="Telefon numarasıyla yeni sipariş..." style="flex:1;padding:12px 14px;border:1px solid #ddd;border-radius:9px;font-size:14px;">
+      <button class="btn" style="background:var(--primary);width:auto;padding:0 20px;flex:none;" onclick="posOpenPaketForm()"><i class="fas fa-plus"></i> Yeni Sipariş</button>
+    </div>
+    <div class="pos-col-sublabel" style="margin-bottom:10px;">Online, Telefon & Kurye Siparişleri</div>
+    <div class="pos-order-list pos-order-list-full" id="pos-paket-list"><div class="pos-list-empty">Aktif sipariş yok</div></div>
+
+    <!-- CALLER ID — GELEN ÇAĞRI POPUP (sağ alt köşe) -->
+    <div id="callerid-popup" class="callerid-popup" style="display:none;" onclick="posAnswerCallerIdPopup()">
+      <div class="cip-icon"><i class="fas fa-phone-volume fa-shake"></i></div>
+      <div class="cip-body">
+        <div class="cip-title">📞 Gelen Çağrı</div>
+        <div class="cip-name" id="cip-name">-</div>
+        <div class="cip-phone" id="cip-phone">-</div>
       </div>
+      <div class="cip-hint">Sipariş açmak için dokun</div>
+    </div>
+  </div>
 
-      <!-- SÜTUN 2: GEL AL -->
-      <div class="pos-col">
-        <div class="pos-col-head pos-col-green"><i class="fas fa-shopping-bag"></i> Gel Al</div>
-        <button class="btn" style="background:#27ae60;margin-bottom:10px;" onclick="posStartOrder('gelal')">+ Yeni Gel-Al Siparişi</button>
-        <div class="pos-col-sublabel">Hazırlanan Gel-Al Siparişleri</div>
-        <div class="pos-order-list" id="pos-gelal-list"><div class="pos-list-empty">Aktif sipariş yok</div></div>
-      </div>
-
-      <!-- SÜTUN 3: PAKET SERVİS (Online + Caller ID + Telefon siparişleri buraya düşer) -->
-      <div class="pos-col">
-        <div class="pos-col-head pos-col-red"><i class="fas fa-motorcycle"></i> Paket Servis</div>
-        <div style="display:flex;gap:6px;margin-bottom:10px;">
-          <input type="tel" id="pos-paket-phone-q" placeholder="Telefon ile ara..." style="flex:1;padding:9px 10px;border:1px solid #ddd;border-radius:7px;font-size:12.5px;">
-          <button class="btn" style="background:#3498db;width:auto;padding:0 12px;flex:none;" onclick="posOpenPaketForm()"><i class="fas fa-plus"></i></button>
+  <!-- PAKET SERVİS: yeni müşteri / telefon siparişi formu -->
+  <div id="pos-paket-view" class="tab">
+    <div class="pos-gelal-paket-start" style="text-align:left;max-width:480px;margin:40px auto;">
+      <h3 style="margin-bottom:14px;text-align:center;"><i class="fas fa-phone" style="color:var(--primary);"></i> Paket Servis Siparişi</h3>
+      <div class="fg" style="margin-bottom:10px;">
+        <label>Telefon Numarası</label>
+        <div style="display:flex;gap:8px;">
+          <input type="tel" id="pos-paket-phone" placeholder="05xx xxx xx xx" style="flex:1;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
+          <button class="btn" style="background:#3498db;width:auto;padding:0 16px;" onclick="posLookupCustomer()"><i class="fas fa-search"></i> Bul</button>
         </div>
-        <div class="pos-col-sublabel">Online, Telefon & Kurye Siparişleri</div>
-        <div class="pos-order-list" id="pos-paket-list"><div class="pos-list-empty">Aktif sipariş yok</div></div>
+      </div>
+      <div class="fg" style="margin-bottom:10px;"><label>Ad Soyad</label><input type="text" id="pos-paket-name" placeholder="Müşteri adı" style="width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;"></div>
+      <div class="fg" style="margin-bottom:16px;"><label>Adres</label><textarea id="pos-paket-address" placeholder="Teslimat adresi" style="width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;min-height:60px;"></textarea></div>
+      <div id="pos-paket-found-badge" style="display:none;background:#eafaf1;color:#27ae60;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:700;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" style="background:#7f8c8d;" onclick="goHomeTab('pos-paket')">İptal</button>
+        <button class="btn" style="background:var(--primary);" onclick="posStartOrder('paket')">+ Ürün Seçimine Geç</button>
       </div>
     </div>
+  </div>
 
-    <!-- PAKET SERVİS: yeni müşteri / telefon siparişi formu (modal benzeri kart) -->
-    <div id="pos-paket-view" style="display:none;">
-      <div class="pos-gelal-paket-start" style="text-align:left;max-width:480px;margin:0 auto;">
-        <h3 style="margin-bottom:14px;text-align:center;"><i class="fas fa-phone" style="color:var(--primary);"></i> Paket Servis Siparişi</h3>
-        <div class="fg" style="margin-bottom:10px;">
-          <label>Telefon Numarası</label>
-          <div style="display:flex;gap:8px;">
-            <input type="tel" id="pos-paket-phone" placeholder="05xx xxx xx xx" style="flex:1;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
-            <button class="btn" style="background:#3498db;width:auto;padding:0 16px;" onclick="posLookupCustomer()"><i class="fas fa-search"></i> Bul</button>
-          </div>
-        </div>
-        <div class="fg" style="margin-bottom:10px;"><label>Ad Soyad</label><input type="text" id="pos-paket-name" placeholder="Müşteri adı" style="width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;"></div>
-        <div class="fg" style="margin-bottom:16px;"><label>Adres</label><textarea id="pos-paket-address" placeholder="Teslimat adresi" style="width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;font-size:14px;min-height:60px;"></textarea></div>
-        <div id="pos-paket-found-badge" style="display:none;background:#eafaf1;color:#27ae60;padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:700;margin-bottom:12px;"></div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn" style="background:#7f8c8d;" onclick="posBackToStart()">İptal</button>
-          <button class="btn" style="background:var(--primary);" onclick="posStartOrder('paket')">+ Ürün Seçimine Geç</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ÜRÜN SEÇİMİ + SEPET (masa/gelal/paket ortak ekranı) -->
-    <div id="pos-order-screen" class="pos-order-screen" style="display:none;">
+  <!-- ÜRÜN SEÇİMİ + SEPET (masa/gelal/paket ortak ekranı) -->
+  <div id="pos-order-screen" class="tab">
+    <div class="pos-order-screen">
       <div class="pos-products-col">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
           <button class="btn" style="background:#7f8c8d;width:auto;padding:8px 14px;font-size:12px;flex:none;" onclick="posBackToStart()"><i class="fas fa-arrow-left"></i> Geri</button>
@@ -1270,7 +1294,7 @@ input:checked+.slider:before{transform:translateX(24px);}
       <div id="push-preview" style="background:#1a1a1a;border-radius:16px;padding:16px;color:white;min-height:100px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
           <div style="width:28px;height:28px;background:#FF6600;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;">🍖</div>
-          <span style="font-size:11px;color:rgba(255,255,255,.5);">Dönerci İsmail • Şimdi</span>
+          <span id="push-preview-biz" style="font-size:11px;color:rgba(255,255,255,.5);">Dönerci İsmail • Şimdi</span>
         </div>
         <div id="pp-title" style="font-size:13px;font-weight:700;margin-bottom:4px;">Başlık buraya gelecek</div>
         <div id="pp-body" style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4;">Mesaj buraya gelecek...</div>
@@ -1439,6 +1463,18 @@ input:checked+.slider:before{transform:translateX(24px);}
 
   </div>
 </div>
+
+  <div id="callerid-settings" class="tab">
+    <div style="max-width:520px;background:white;border-radius:14px;padding:28px;box-shadow:0 2px 10px rgba(0,0,0,.06);">
+      <h3 style="margin-bottom:6px;"><i class="fas fa-phone-volume" style="color:var(--primary);"></i> Caller ID Ayarları</h3>
+      <p style="color:#888;font-size:13px;margin-bottom:20px;">Sabit hatta bağlı bir Caller ID cihazı, telefon çaldığında Paket Servis ekranının sağ alt köşesinde bildirim gösterir. Gerçek cihaz entegrasyonu için cihazınızın marka/modelini bildirin; şimdilik test butonuyla akışı deneyebilirsiniz.</p>
+      <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;margin-bottom:20px;cursor:pointer;">
+        <input type="checkbox" id="cid-enabled" checked style="width:18px;height:18px;"> Caller ID bildirimlerini etkinleştir
+      </label>
+      <button class="btn" style="background:var(--primary);margin-bottom:12px;" onclick="saveCallerIdSettings()"><i class="fas fa-save"></i> Kaydet</button>
+      <button class="btn" style="background:#8e44ad;" onclick="simulateCallerId()"><i class="fas fa-phone"></i> Test Çağrısı Simüle Et</button>
+    </div>
+  </div>
 
   <div id="store-hours" class="tab">
     <h3 style="margin-bottom:20px;">🕐 İşletme Çalışma Saatleri</h3>
@@ -1906,7 +1942,7 @@ input:checked+.slider:before{transform:translateX(24px);}
           <div style="flex:1;min-width:0;">
             <div id="prev-title" style="font-weight:700;font-size:13px;color:#111;">Başlık buraya gelecek</div>
             <div id="prev-body" style="font-size:12px;color:#555;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mesaj buraya gelecek...</div>
-            <div style="font-size:10px;color:#999;margin-top:3px;">Dönerci İsmail • şimdi</div>
+            <div id="push-preview-biz2" style="font-size:10px;color:#999;margin-top:3px;">Dönerci İsmail • şimdi</div>
           </div>
         </div>
       </div>
@@ -2159,8 +2195,8 @@ input:checked+.slider:before{transform:translateX(24px);}
     <div style="margin-bottom:16px;">
       <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:8px;">📤 Bildirim Yöntemi</label>
       <div style="display:flex;gap:8px;">
-        <label style="display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex:1;justify-content:center;" id="telafi-method-sms-label">
-          <input type="checkbox" id="telafi-method-sms" checked onchange="updateTelafiMethodStyle()"> 📱 SMS
+        <label style="display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex:1;justify-content:center;" id="telafi-method-wa-label">
+          <input type="checkbox" id="telafi-method-wa" checked onchange="updateTelafiMethodStyle()"> 💬 WhatsApp
         </label>
         <label style="display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex:1;justify-content:center;" id="telafi-method-push-label">
           <input type="checkbox" id="telafi-method-push" onchange="updateTelafiMethodStyle()"> 🔔 Push
@@ -2225,6 +2261,7 @@ const db   = getFirestore(app);
 // gelir — URL'den DEĞİL. Böylece bir işletme sahibi asla başka bir işletmenin
 // verisine erişemez (Security Rules bunu ayrıca sunucu tarafında da zorunlu kılar).
 let TENANT_ID = null;
+let BIZ = {}; // İşletme markalama bilgileri: {name, phone, whatsapp, address, instagram, facebook}
 
 setPersistence(auth, browserLocalPersistence).catch(e=>console.error("Persistence hatası:",e));
 
@@ -2240,105 +2277,32 @@ let posCart = [];                     // [{n,p,note,c}]
 let posTables = [];                   // {id,area,number,status}
 let posActiveArea = null;
 let posCurrentTableId = null;
-let posCurrentOrderId = null;         // masa: açık siparişin doküman id'si (varsa)
+let posCurrentOrderId = null;         // masa/gel-al: açık siparişin doküman id'si (varsa)
 let posCustomer = {name:'',phone:'',address:''};
 let posTablesLoaded = false;
+let posProductsLoaded = false;
+let posReturnTab = 'pos-masalar';     // Sepet ekranından "Geri" hangi ekrana dönecek
+let posGelAlSlot = null;              // Gel-Al kutucuğu numarası (aktifse)
+const GELAL_SLOT_COUNT = 20;
+let posActiveGelAlOrders = {};        // {slotNumber: orderDoc}
 
-let _posOrdersUnsubscribe = null;
-
-window.initPos = async ()=>{
-  await posLoadProducts();
-  if(!posTablesLoaded){ await posLoadTables(); posTablesLoaded = true; } else { renderPosTableGrid(); }
-  posShowStartView();
-  posListenActiveOrders();
-};
-window.stopPos = ()=>{ if(_posOrdersUnsubscribe){ _posOrdersUnsubscribe(); _posOrdersUnsubscribe=null; } };
-
-window.goHomeTab = (id)=>{
-  const navItem = [...document.querySelectorAll('.mi')].find(m=>m.getAttribute('onclick')?.includes(`'${id}'`));
-  showTab(id, navItem || document.querySelector('.mi'));
-};
-
-async function posLoadProducts(){
+async function ensurePosProducts(){
+  if(posProductsLoaded) return;
   try{
     const snap = await getDocs(collection(db,'restaurants',TENANT_ID,'products'));
     posProducts = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.inStock!==false);
+    posProductsLoaded = true;
   }catch(e){ toast('Ürünler yüklenemedi: '+e.message, true); }
 }
 
-// Masa / Gel-Al / Paket Servis 3 sütunu her zaman birlikte görünür; sadece
-// ürün seçim+sepet ekranı bunların üzerine açılır.
-function posShowStartView(){
-  document.getElementById('pos-order-screen').style.display='none';
-  document.getElementById('pos-paket-view').style.display='none';
-  document.getElementById('pos-overview').style.display='flex';
-}
-window.posBackToStart = ()=>{
-  posCart=[]; posCurrentOrderId=null; posCurrentTableId=null;
-  posCustomer={name:'',phone:'',address:''};
-  posShowStartView();
-  posLoadTables();
+// ═══════════ MASALAR ═══════════
+let _posMasalarUnsubscribe = null;
+window.initPosMasalar = async ()=>{
+  await ensurePosProducts();
+  if(!posTablesLoaded){ await posLoadTables(); posTablesLoaded = true; } else { renderPosTableGrid(); }
 };
-window.posOpenPaketForm = ()=>{
-  document.getElementById('pos-overview').style.display='none';
-  document.getElementById('pos-order-screen').style.display='none';
-  document.getElementById('pos-paket-view').style.display='block';
-  const q = document.getElementById('pos-paket-phone-q').value.trim();
-  if(q) document.getElementById('pos-paket-phone').value = q;
-};
+window.stopPosMasalar = ()=>{};
 
-// ─────────────── Sütun 2 & 3: aktif Gel-Al / Paket siparişlerini canlı izle ───────────────
-function posListenActiveOrders(){
-  if(_posOrdersUnsubscribe) return; // zaten dinliyor
-  const q = query(collection(db,'restaurants',TENANT_ID,'orders'), where('status','in',['Onay Bekliyor','Hazırlanıyor','Yola Çıktı']));
-  _posOrdersUnsubscribe = onSnapshot(q, snap=>{
-    const gelal=[], paket=[];
-    snap.docs.forEach(d=>{
-      const o={id:d.id,...d.data()};
-      if(o.channel==='masa') return;                 // masalar ayrı yönetiliyor
-      if(o.channel==='gelal') gelal.push(o);
-      else paket.push(o);                             // 'paket' | 'online' | Caller ID | tanımsız (eski online sipariş)
-    });
-    renderPosGelAlList(gelal);
-    renderPosPaketList(paket);
-  }, e=>console.warn('POS aktif sipariş dinleme hatası:', e.message));
-}
-function posElapsed(dateField){
-  if(!dateField) return '';
-  const d = dateField.toDate ? dateField.toDate() : new Date(dateField.seconds*1000);
-  const min = Math.max(0, Math.round((new Date()-d)/60000));
-  return min<1 ? 'az önce' : min+' dk';
-}
-function renderPosGelAlList(list){
-  const el = document.getElementById('pos-gelal-list');
-  if(list.length===0){ el.innerHTML = '<div class="pos-list-empty">Aktif sipariş yok</div>'; return; }
-  el.innerHTML = list.map(o=>`
-    <div class="pos-order-row gelal-row" onclick="posGoToDashboard()">
-      <div><div class="porn">${o.customer||'Gel-Al Müşterisi'}</div><div class="port">${posElapsed(o.date)} · ${o.status}</div></div>
-      <div class="porp">${o.total||0} ₺</div>
-    </div>`).join('');
-}
-function renderPosPaketList(list){
-  const el = document.getElementById('pos-paket-list');
-  if(list.length===0){ el.innerHTML = '<div class="pos-list-empty">Aktif sipariş yok</div>'; return; }
-  el.innerHTML = list.map(o=>{
-    const src = o.channel==='paket' ? '📞 Telefon' : (o.channel==='online'||!o.channel) ? '🌐 Online' : o.channel;
-    return `<div class="pos-order-row paket-row" onclick="posGoToDashboard()">
-      <div><div class="porn">${o.customer||o.phone||'Müşteri'}</div><div class="port">${src} · ${posElapsed(o.date)} · ${o.status}</div></div>
-      <div class="porp">${o.total||0} ₺</div>
-    </div>`;
-  }).join('');
-}
-window.posGoToDashboard = ()=>{
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('dashboard').classList.add('active');
-  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('active'));
-  const navItem = [...document.querySelectorAll('.mi')].find(m=>m.getAttribute('onclick')?.includes("'dashboard'"));
-  if(navItem) navItem.classList.add('active');
-  document.getElementById('pghead').innerText = 'Sipariş Paneli';
-};
-
-// ─────────────── MASA ───────────────
 async function posLoadTables(){
   try{
     const snap = await getDocs(collection(db,'restaurants',TENANT_ID,'tables'));
@@ -2391,6 +2355,7 @@ window.posAddTableToArea = async ()=>{
 window.posOpenTable = async (tableId)=>{
   const table = posTables.find(t=>t.id===tableId); if(!table) return;
   posMode = 'masa';
+  posReturnTab = 'pos-masalar';
   posCurrentTableId = tableId;
   posCustomer = {name:'Masa '+table.number, phone:'', address:''};
   posCurrentOrderId = null; posCart = [];
@@ -2402,28 +2367,152 @@ window.posOpenTable = async (tableId)=>{
     }catch(e){ toast('Masa siparişi okunamadı: '+e.message, true); }
   }
   document.getElementById('pos-order-title').innerText = `🪑 Masa ${table.number} (${table.area||'Salon'})`;
-  document.getElementById('pos-overview').style.display='none';
   posOpenOrderScreen();
 };
+window.posSendToKitchen = async ()=>{
+  const total = posCart.reduce((s,i)=>s+(i.p||0),0);
+  const table = posTables.find(t=>t.id===posCurrentTableId);
+  try{
+    if(posCurrentOrderId){
+      await updateDoc(doc(db,'restaurants',TENANT_ID,'orders',posCurrentOrderId), {items:posCart, total});
+    } else {
+      const ref = await addDoc(collection(db,'restaurants',TENANT_ID,'orders'), {
+        channel:'masa', tableId:posCurrentTableId, tableNumber:table?.number, tableArea:table?.area,
+        customer:'Masa '+(table?.number||''), items:posCart, total, status:'Masada', date:serverTimestamp()
+      });
+      posCurrentOrderId = ref.id;
+    }
+    await updateDoc(doc(db,'restaurants',TENANT_ID,'tables',posCurrentTableId), {status:'Dolu', total});
+    toast('🔥 Sipariş mutfağa gönderildi');
+    printOrd(posCurrentOrderId);
+    posBackToStart();
+  }catch(e){ toast('❌ Hata: '+e.message, true); }
+};
+window.posCloseTable = async ()=>{
+  if(posCart.length===0){ toast('❌ Sepet boş', true); return; }
+  const confirmed = await showConfirmDialog('Hesabı kapatıp masayı boşaltmak istediğinize emin misiniz?');
+  if(!confirmed) return;
+  const total = posCart.reduce((s,i)=>s+(i.p||0),0);
+  const table = posTables.find(t=>t.id===posCurrentTableId);
+  try{
+    if(posCurrentOrderId){
+      await updateDoc(doc(db,'restaurants',TENANT_ID,'orders',posCurrentOrderId), {items:posCart, total, status:'Teslim Edildi'});
+    } else {
+      await addDoc(collection(db,'restaurants',TENANT_ID,'orders'), {
+        channel:'masa', tableId:posCurrentTableId, tableNumber:table?.number, tableArea:table?.area,
+        customer:'Masa '+(table?.number||''), items:posCart, total, status:'Teslim Edildi', date:serverTimestamp()
+      });
+    }
+    await updateDoc(doc(db,'restaurants',TENANT_ID,'tables',posCurrentTableId), {status:'Boş', total:0});
+    toast('✅ Hesap kapatıldı, masa boşaltıldı');
+    posBackToStart();
+  }catch(e){ toast('❌ Hata: '+e.message, true); }
+};
 
-// ─────────────── GEL-AL / PAKET SERVİS başlat ───────────────
-window.posStartOrder = (mode)=>{
-  posMode = mode;
-  posCart=[]; posCurrentOrderId=null; posCurrentTableId=null;
-  if(mode==='gelal'){
-    posCustomer = {name:'Gel-Al Müşterisi', phone:'', address:''};
-    document.getElementById('pos-order-title').innerText = '🛍️ Yeni Gel-Al Siparişi';
-  } else {
-    const phone = document.getElementById('pos-paket-phone').value.trim();
-    const name = document.getElementById('pos-paket-name').value.trim();
-    const addr = document.getElementById('pos-paket-address').value.trim();
-    if(!name || !addr){ toast('❌ Ad ve adres zorunlu', true); return; }
-    posCustomer = {name, phone, address:addr};
-    document.getElementById('pos-order-title').innerText = `🛵 Paket Servis - ${name}`;
+// ═══════════ GEL AL (20 numaralı kutucuk) ═══════════
+let _posGelAlUnsubscribe = null;
+window.initPosGelAl = async ()=>{
+  await ensurePosProducts();
+  if(_posGelAlUnsubscribe) { renderGelAlGrid(); return; }
+  const q = query(collection(db,'restaurants',TENANT_ID,'orders'), where('channel','==','gelal'), where('status','==','Hazırlanıyor'));
+  _posGelAlUnsubscribe = onSnapshot(q, snap=>{
+    posActiveGelAlOrders = {};
+    snap.docs.forEach(d=>{
+      const o={id:d.id,...d.data()};
+      if(o.slotNumber) posActiveGelAlOrders[o.slotNumber] = o;
+    });
+    renderGelAlGrid();
+  }, e=>console.warn('Gel-Al dinleme hatası:', e.message));
+};
+window.stopPosGelAl = ()=>{ if(_posGelAlUnsubscribe){ _posGelAlUnsubscribe(); _posGelAlUnsubscribe=null; } };
+function renderGelAlGrid(){
+  const el = document.getElementById('gelal-grid'); if(!el) return;
+  let html = '';
+  for(let n=1; n<=GELAL_SLOT_COUNT; n++){
+    const o = posActiveGelAlOrders[n];
+    if(o){
+      html += `<button class="gelal-slot dolu" onclick="posOpenGelAlSlot(${n})">
+        <div class="gs-num">${n}</div>
+        <div class="gs-info">${o.customer||'Müşteri'}</div>
+        <div class="gs-info">${o.total||0} ₺</div>
+      </button>`;
+    } else {
+      html += `<button class="gelal-slot bos" onclick="posOpenGelAlSlot(${n})">
+        <div class="gs-num">${n}</div>
+        <div class="gs-info">Boş</div>
+      </button>`;
+    }
   }
+  el.innerHTML = html;
+}
+window.posOpenGelAlSlot = (slotNumber)=>{
+  posMode = 'gelal';
+  posReturnTab = 'pos-gelal';
+  posGelAlSlot = slotNumber;
+  const existing = posActiveGelAlOrders[slotNumber];
+  if(existing){
+    posCurrentOrderId = existing.id;
+    posCart = [...(existing.items||[])];
+    posCustomer = {name: existing.customer||'', phone:'', address:''};
+  } else {
+    posCurrentOrderId = null;
+    posCart = [];
+    posCustomer = {name:'', phone:'', address:''};
+  }
+  document.getElementById('pos-order-title').innerText = `🛍️ Gel-Al #${slotNumber}`;
   posOpenOrderScreen();
 };
 
+// ═══════════ PAKET SERVİS & ONLINE ═══════════
+let _posPaketUnsubscribe = null;
+window.initPosPaket = async ()=>{
+  await ensurePosProducts();
+  if(!_posPaketUnsubscribe){
+    const q = query(collection(db,'restaurants',TENANT_ID,'orders'), where('status','in',['Onay Bekliyor','Hazırlanıyor','Yola Çıktı']));
+    _posPaketUnsubscribe = onSnapshot(q, snap=>{
+      const paket=[];
+      snap.docs.forEach(d=>{
+        const o={id:d.id,...d.data()};
+        if(o.channel==='masa'||o.channel==='gelal') return;
+        paket.push(o); // 'paket' | 'online' | Caller ID | tanımsız
+      });
+      renderPosPaketList(paket);
+    }, e=>console.warn('Paket Servis dinleme hatası:', e.message));
+  }
+  posListenCallerId();
+};
+window.stopPosPaket = ()=>{
+  if(_posPaketUnsubscribe){ _posPaketUnsubscribe(); _posPaketUnsubscribe=null; }
+  stopCallerIdListener();
+};
+function posElapsed(dateField){
+  if(!dateField) return '';
+  const d = dateField.toDate ? dateField.toDate() : new Date(dateField.seconds*1000);
+  const min = Math.max(0, Math.round((new Date()-d)/60000));
+  return min<1 ? 'az önce' : min+' dk';
+}
+function renderPosPaketList(list){
+  const el = document.getElementById('pos-paket-list'); if(!el) return;
+  if(list.length===0){ el.innerHTML = '<div class="pos-list-empty">Aktif sipariş yok</div>'; return; }
+  el.innerHTML = list.map(o=>{
+    const src = o.channel==='paket' ? '📞 Telefon' : (o.channel==='online'||!o.channel) ? '🌐 Online' : o.channel;
+    return `<div class="pos-order-row paket-row" onclick="posGoToDashboard()">
+      <div><div class="porn">${o.customer||o.phone||'Müşteri'}</div><div class="port">${src} · ${posElapsed(o.date)} · ${o.status}</div></div>
+      <div class="porp">${o.total||0} ₺</div>
+    </div>`;
+  }).join('');
+}
+window.posGoToDashboard = ()=>{ showTab('dashboard', 'Sipariş Paneli'); };
+
+window.posOpenPaketForm = ()=>{
+  const q = document.getElementById('pos-paket-phone-q')?.value?.trim();
+  showTab('pos-paket-view', 'Paket Servis Siparişi');
+  document.getElementById('pos-paket-phone').value = q || '';
+  document.getElementById('pos-paket-name').value = '';
+  document.getElementById('pos-paket-address').value = '';
+  document.getElementById('pos-paket-found-badge').style.display = 'none';
+  if(q) posLookupCustomer();
+};
 window.posLookupCustomer = async ()=>{
   const phoneRaw = document.getElementById('pos-paket-phone').value.trim();
   if(!phoneRaw){ toast('❌ Telefon numarası girin', true); return; }
@@ -2448,11 +2537,71 @@ window.posLookupCustomer = async ()=>{
   }catch(e){ toast('Arama hatası: '+e.message, true); }
 };
 
-// ─────────────── ÜRÜN SEÇİMİ + SEPET (ortak) ───────────────
+// ─────────────── Caller ID: gelen çağrı popup'u ───────────────
+let _callerIdUnsubscribe = null;
+function posListenCallerId(){
+  if(_callerIdUnsubscribe) return;
+  try{
+    const q = query(collection(db,'restaurants',TENANT_ID,'callerid_events'), where('status','==','ringing'));
+    _callerIdUnsubscribe = onSnapshot(q, snap=>{
+      if(snap.empty){ document.getElementById('callerid-popup').style.display='none'; return; }
+      const d = snap.docs[snap.docs.length-1];
+      const ev = {id:d.id, ...d.data()};
+      window._currentCallerIdEvent = ev;
+      document.getElementById('cip-name').innerText = ev.name || 'Bilinmeyen Müşteri';
+      document.getElementById('cip-phone').innerText = ev.phone || '';
+      document.getElementById('callerid-popup').style.display='flex';
+    }, e=>console.warn('Caller ID dinleme hatası:', e.message));
+  }catch(e){ console.warn(e); }
+}
+function stopCallerIdListener(){ if(_callerIdUnsubscribe){ _callerIdUnsubscribe(); _callerIdUnsubscribe=null; } }
+window.posAnswerCallerIdPopup = async ()=>{
+  const ev = window._currentCallerIdEvent; if(!ev) return;
+  document.getElementById('callerid-popup').style.display='none';
+  try{ await updateDoc(doc(db,'restaurants',TENANT_ID,'callerid_events',ev.id), {status:'answered'}); }catch(e){}
+  showTab('pos-paket-view', 'Paket Servis Siparişi');
+  document.getElementById('pos-paket-phone').value = ev.phone || '';
+  document.getElementById('pos-paket-name').value = '';
+  document.getElementById('pos-paket-address').value = '';
+  document.getElementById('pos-paket-found-badge').style.display = 'none';
+  if(ev.phone) posLookupCustomer();
+};
+
+// ─────────────── Caller ID Ayarları (settings-hub grubu) ───────────────
+window.loadCallerIdSettings = async ()=>{
+  try{
+    const snap = await getDoc(doc(db,'restaurants',TENANT_ID,'settings','callerid'));
+    const d = snap.exists() ? snap.data() : {};
+    const chk = document.getElementById('cid-enabled'); if(chk) chk.checked = d.enabled !== false;
+  }catch(e){ console.warn(e); }
+};
+window.saveCallerIdSettings = async ()=>{
+  const enabled = document.getElementById('cid-enabled').checked;
+  try{
+    await setDoc(doc(db,'restaurants',TENANT_ID,'settings','callerid'), {enabled}, {merge:true});
+    toast('✅ Caller ID ayarları kaydedildi');
+  }catch(e){ toast('❌ Hata: '+e.message, true); }
+};
+window.simulateCallerId = async ()=>{
+  const testNumbers = ['05321234567','05439876543','05051112233'];
+  const phone = testNumbers[Math.floor(Math.random()*testNumbers.length)];
+  try{
+    let name = null;
+    for(const col of ['phone_customers','customers']){
+      const q = query(collection(db,'restaurants',TENANT_ID,col), where('phone','==',phone));
+      const snap = await getDocs(q);
+      if(!snap.empty){ name = snap.docs[0].data().name; break; }
+    }
+    await addDoc(collection(db,'restaurants',TENANT_ID,'callerid_events'), {
+      phone, name, status:'ringing', createdAt: serverTimestamp()
+    });
+    toast('📞 Test çağrısı oluşturuldu — Paket Servis ekranını kontrol edin');
+  }catch(e){ toast('❌ Hata: '+e.message, true); }
+};
+
+// ─────────────── ÜRÜN SEÇİMİ + SEPET (ortak ekran) ───────────────
 function posOpenOrderScreen(){
-  document.getElementById('pos-overview').style.display='none';
-  document.getElementById('pos-paket-view').style.display='none';
-  document.getElementById('pos-order-screen').style.display='flex';
+  showTab('pos-order-screen', posMode==='masa' ? 'Masa Siparişi' : posMode==='gelal' ? 'Gel-Al Siparişi' : 'Paket Servis Siparişi');
   const cats = [...new Set(posProducts.map(p=>p.category||'Diğer'))];
   posActiveCat = cats[0]||null;
   renderPosCatTabs(cats);
@@ -2460,11 +2609,16 @@ function posOpenOrderScreen(){
   renderPosCustomerSummary();
   renderPosCart();
 }
+window.posBackToStart = ()=>{
+  posCart=[]; posCurrentOrderId=null; posCurrentTableId=null; posGelAlSlot=null;
+  posCustomer={name:'',phone:'',address:''};
+  goHomeTab(posReturnTab);
+};
 function renderPosCustomerSummary(){
   const el = document.getElementById('pos-customer-summary');
   if(posMode==='masa'){ el.style.display='none'; return; }
   el.style.display='flex';
-  el.innerHTML = `<div style="font-weight:700;font-size:13px;">${posCustomer.name}</div>${posCustomer.phone?`<div style="font-size:12px;color:#777;">📞 ${posCustomer.phone}</div>`:''}${posCustomer.address?`<div style="font-size:12px;color:#777;">📍 ${posCustomer.address}</div>`:''}`;
+  el.innerHTML = `<div style="font-weight:700;font-size:13px;">${posCustomer.name||'(Müşteri adı Tamamla anında istenecek)'}</div>${posCustomer.phone?`<div style="font-size:12px;color:#777;">📞 ${posCustomer.phone}</div>`:''}${posCustomer.address?`<div style="font-size:12px;color:#777;">📍 ${posCustomer.address}</div>`:''}`;
 }
 function renderPosCatTabs(cats){
   document.getElementById('pos-cat-tabs').innerHTML = cats.map(c=>
@@ -2526,58 +2680,57 @@ function renderPosOrderActions(){
     el.innerHTML = `
       <button class="btn" style="background:#e67e22;margin-bottom:8px;" onclick="posSendToKitchen()"><i class="fas fa-fire"></i> Mutfağa Gönder</button>
       <button class="btn" style="background:#27ae60;" onclick="posCloseTable()"><i class="fas fa-check"></i> Hesabı Al & Masayı Kapat</button>`;
+  } else if(posMode==='gelal'){
+    el.innerHTML = `<button class="btn" style="background:#27ae60;" onclick="posCompleteGelAl()"><i class="fas fa-check"></i> Tamamla</button>`;
   } else {
     el.innerHTML = `<button class="btn" style="background:var(--primary);" onclick="posSubmitOrder()"><i class="fas fa-paper-plane"></i> Siparişi Oluştur</button>`;
   }
 }
 
-// ─────────────── MASA: mutfağa gönder / hesabı kapat ───────────────
-window.posSendToKitchen = async ()=>{
+// ─────────────── GEL-AL: Tamamla (müşteri adını burada sorar) ───────────────
+window.posCompleteGelAl = async ()=>{
+  if(posCart.length===0){ toast('❌ Sepet boş', true); return; }
+  let name = posCustomer.name;
+  if(!name){
+    name = prompt('Müşteri adı:', '');
+    if(name===null) return; // vazgeçildi
+    name = name.trim() || ('Gel-Al #'+posGelAlSlot);
+  }
   const total = posCart.reduce((s,i)=>s+(i.p||0),0);
-  const table = posTables.find(t=>t.id===posCurrentTableId);
   try{
     if(posCurrentOrderId){
-      await updateDoc(doc(db,'restaurants',TENANT_ID,'orders',posCurrentOrderId), {items:posCart, total});
+      await updateDoc(doc(db,'restaurants',TENANT_ID,'orders',posCurrentOrderId), {items:posCart, total, customer:name});
     } else {
       const ref = await addDoc(collection(db,'restaurants',TENANT_ID,'orders'), {
-        channel:'masa', tableId:posCurrentTableId, tableNumber:table?.number, tableArea:table?.area,
-        customer:'Masa '+(table?.number||''), items:posCart, total, status:'Masada', date:serverTimestamp()
+        channel:'gelal', slotNumber:posGelAlSlot, customer:name, items:posCart, total,
+        status:'Hazırlanıyor', date:serverTimestamp(), enteredByStaff:true
       });
       posCurrentOrderId = ref.id;
     }
-    await updateDoc(doc(db,'restaurants',TENANT_ID,'tables',posCurrentTableId), {status:'Dolu', total});
-    toast('🔥 Sipariş mutfağa gönderildi');
+    toast('✅ Gel-Al siparişi tamamlandı');
     printOrd(posCurrentOrderId);
     posBackToStart();
   }catch(e){ toast('❌ Hata: '+e.message, true); }
 };
-window.posCloseTable = async ()=>{
-  if(posCart.length===0){ toast('❌ Sepet boş', true); return; }
-  const confirmed = await showConfirmDialog('Hesabı kapatıp masayı boşaltmak istediğinize emin misiniz?');
-  if(!confirmed) return;
-  const total = posCart.reduce((s,i)=>s+(i.p||0),0);
-  const table = posTables.find(t=>t.id===posCurrentTableId);
-  try{
-    if(posCurrentOrderId){
-      await updateDoc(doc(db,'restaurants',TENANT_ID,'orders',posCurrentOrderId), {items:posCart, total, status:'Teslim Edildi'});
-    } else {
-      await addDoc(collection(db,'restaurants',TENANT_ID,'orders'), {
-        channel:'masa', tableId:posCurrentTableId, tableNumber:table?.number, tableArea:table?.area,
-        customer:'Masa '+(table?.number||''), items:posCart, total, status:'Teslim Edildi', date:serverTimestamp()
-      });
-    }
-    await updateDoc(doc(db,'restaurants',TENANT_ID,'tables',posCurrentTableId), {status:'Boş', total:0});
-    toast('✅ Hesap kapatıldı, masa boşaltıldı');
-    posBackToStart();
-  }catch(e){ toast('❌ Hata: '+e.message, true); }
-};
 
-// ─────────────── GEL-AL / PAKET SERVİS: sipariş oluştur ───────────────
+// ─────────────── PAKET SERVİS: sipariş oluştur ───────────────
+window.posStartOrder = (mode)=>{
+  posMode = mode;
+  posReturnTab = 'pos-paket';
+  posCart=[]; posCurrentOrderId=null; posCurrentTableId=null;
+  const phone = document.getElementById('pos-paket-phone').value.trim();
+  const name = document.getElementById('pos-paket-name').value.trim();
+  const addr = document.getElementById('pos-paket-address').value.trim();
+  if(!name || !addr){ toast('❌ Ad ve adres zorunlu', true); return; }
+  posCustomer = {name, phone, address:addr};
+  document.getElementById('pos-order-title').innerText = `🛵 Paket Servis - ${name}`;
+  posOpenOrderScreen();
+};
 window.posSubmitOrder = async ()=>{
   if(posCart.length===0){ toast('❌ Sepet boş', true); return; }
   const total = posCart.reduce((s,i)=>s+(i.p||0),0);
   const orderData = {
-    channel: posMode,                 // 'gelal' | 'paket'
+    channel: 'paket',
     customer: posCustomer.name,
     phone: posCustomer.phone || '',
     addressDetails: posCustomer.address || '',
@@ -2591,12 +2744,10 @@ window.posSubmitOrder = async ()=>{
     toast('✅ Sipariş oluşturuldu');
     printOrd(ref.id);
     posBackToStart();
-    if(posMode==='paket'){
-      document.getElementById('pos-paket-phone').value='';
-      document.getElementById('pos-paket-name').value='';
-      document.getElementById('pos-paket-address').value='';
-      document.getElementById('pos-paket-found-badge').style.display='none';
-    }
+    document.getElementById('pos-paket-phone').value='';
+    document.getElementById('pos-paket-name').value='';
+    document.getElementById('pos-paket-address').value='';
+    document.getElementById('pos-paket-found-badge').style.display='none';
   }catch(e){ toast('❌ Hata: '+e.message, true); }
 };
 
@@ -2679,6 +2830,7 @@ onAuthStateChanged(auth, async user => {
     if(loadingEl) loadingEl.style.display='none';
     document.getElementById('login-overlay').style.display='none';
     document.getElementById('admin-email-display').innerText = user.email || '';
+    await loadBizBranding();
     if(!isInitialized) { init(); isInitialized = true; }
   } else {
     if(loadingEl) loadingEl.style.display='none';
@@ -3143,26 +3295,8 @@ window.updStatusWithReason = async (id, status, reason, orderData) => {
       } catch(e) {}
     }
 
-    // Müşteriye SMS gönder
-    const phone = orderData?.phone;
-    if(phone) {
-      const reasonText = reason ? ` Sebep: ${reason}` : '';
-      const smsMsg = status === 'İptal'
-        ? `Dönercİ İsmail: Siparişiniz iptal edildi.${reasonText} Bilgi: 0224 246 61 20`
-        : `Dönerci İsmail: Siparişiniz ${status}.${reasonText}`;
-      try {
-        await fetch('https://netgsm-otp.donerciismal.workers.dev/', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ phone, message: smsMsg })
-        });
-        toast(`⚠️ İptal edildi, müşteriye SMS gönderildi.${reason?' ('+reason+')':''}`);
-      } catch(se) {
-        toast('⚠️ İptal edildi (SMS gönderilemedi).');
-      }
-    } else {
-      toast('⚠️ Sipariş iptal edildi.');
-    }
+    if(status === 'İptal') toast(`⚠️ Sipariş iptal edildi.${reason?' ('+reason+')':''}`);
+    else toast(`Sipariş durumu güncellendi: ${status}`);
 
     // FCM push
     const pushMsg = reason ? `Sebep: ${reason}` : 'Üzgünüz, siparişiniz iptal edildi.';
@@ -3183,12 +3317,16 @@ window.cancelApprovedOrder = async (orderId) => {
   modal.innerHTML = `
     <div style="background:white;border-radius:16px;padding:24px;max-width:380px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.2);">
       <h3 style="margin:0 0 8px;color:#c0392b;">⚠️ Siparişi İptal Et</h3>
-      <p style="font-size:13px;color:#666;margin:0 0 16px;">Onaylanmış siparişi iptal etmek istediğinize emin misiniz? Müşteriye SMS ve bildirim gönderilecek.</p>
+      <p style="font-size:13px;color:#666;margin:0 0 16px;">Onaylanmış siparişi iptal etmek istediğinize emin misiniz? Müşteriye uygulama bildirimi gönderilecek.</p>
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:6px;">İptal Sebebi (müşteriye iletilecek)</label>
         <input type="text" id="cancel-approved-reason" placeholder="ör: Ürün tükendi, Adres hatalı..." maxlength="100"
           style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;box-sizing:border-box;">
       </div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;margin-bottom:14px;cursor:pointer;">
+        <input type="checkbox" id="cancel-approved-wa" checked style="width:15px;height:15px;">
+        İptal sonrası WhatsApp'tan da bilgi ver (müşterinin numarasıyla sohbet açılır, mesajı siz gönderirsiniz)
+      </label>
       <div style="display:flex;gap:10px;">
         <button onclick="document.getElementById('cancel-approved-modal').remove()"
           style="flex:1;padding:10px;border:1.5px solid #ddd;border-radius:8px;background:white;font-size:13px;font-weight:700;cursor:pointer;color:#666;">Vazgeç</button>
@@ -3202,10 +3340,17 @@ window.cancelApprovedOrder = async (orderId) => {
 
 window.confirmCancelApproved = async (orderId) => {
   const reason = document.getElementById('cancel-approved-reason')?.value?.trim() || '';
+  const wantsWa = document.getElementById('cancel-approved-wa')?.checked;
   document.getElementById('cancel-approved-modal')?.remove();
   const snap = await getDoc(doc(db,'restaurants',TENANT_ID,'orders',orderId));
   const orderData = snap.exists() ? {id:orderId,...snap.data()} : {id:orderId};
   await updStatusWithReason(orderId, 'İptal', reason, orderData);
+  if(wantsWa && orderData.phone){
+    const bizName = BIZ.name || 'İşletmemiz';
+    const msg = `${bizName}: Siparişiniz iptal edildi.${reason ? ' Sebep: '+reason : ''}`;
+    const cleanPhone = ('90'+orderData.phone.replace(/\D/g,'').replace(/^0/,''));
+    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
 };
 
 window.updStatus=async(id,s)=>{
@@ -3385,7 +3530,7 @@ window.printOrd=async id=>{
   const printHTML = `<html><head><meta charset="UTF-8"><style>${buildPrintCSS(_ps)}</style></head><body>
 
   <div class="tag">${_ps.tag||'** ONLINE SIPARIS **'}</div>
-  <div class="brand">${_ps.brand||'DONERCI ISMAIL'}</div>
+  <div class="brand">${_ps.brand||(BIZ.name||'ISLETME').toUpperCase()}</div>
   <div class="sub">${_ps.subtitle||'KARACABEY'}</div>
   <hr class="sep">
 
@@ -3401,8 +3546,8 @@ window.printOrd=async id=>{
   <hr class="sep2">
 
   <div class="footer">
-    ${_ps.footer1||'Tel: 0224 246 61 20'}<br>
-    ${_ps.footer2||'donercismail.com'}<br>
+    ${_ps.footer1||('Tel: '+(BIZ.phone||'-'))}<br>
+    ${_ps.footer2||BIZ.address||''}<br>
     -------------------<br>
     ${_ps.closing||'Afiyet Olsun!'}
   </div>
@@ -3565,7 +3710,7 @@ window.printTestReceipt = function() {
   const _pts = getPrinterSettings();
   const printHTML = `<html><head><meta charset="UTF-8"><style>${buildPrintCSS(_pts)}</style></head><body>
 <div class="tag">${_pts.tag||'** ONLINE SIPARIS **'}</div>
-<div class="brand">${_pts.brand||'DONERCI ISMAIL'}</div>
+<div class="brand">${_pts.brand||(BIZ.name||'ISLETME').toUpperCase()}</div>
 <div class="sub">${_pts.subtitle||'KARACABEY'}</div>
 <hr class="sep">
 <div class="test-badge">*** TEST ADISYONU ***</div>
@@ -3580,7 +3725,7 @@ window.printTestReceipt = function() {
 <hr class="sep2">
 <div class="rtot"><span class="rcell-name">TOPLAM:</span><span class="rcell-price">360 TL</span></div>
 <hr class="sep2">
-<div class="footer">${_pts.footer1||'Tel: 0224 246 61 20'}<br>${_pts.footer2||'donercismail.com'}<br>-------------------<br>${_pts.closing||'Afiyet Olsun!'}</div>
+<div class="footer">${_pts.footer1||('Tel: '+(BIZ.phone||'-'))}<br>${_pts.footer2||BIZ.address||''}<br>-------------------<br>${_pts.closing||'Afiyet Olsun!'}</div>
 </body></html>`;
 
   if(window.electronAPI) {
@@ -4030,7 +4175,7 @@ window.custSendQuickCoupon=()=>{
   const name=document.getElementById('cust-name').value;
   closeModal('cust-modal');
   // Kişiye özel kupon sekmesini aç ve telefonu doldur
-  showTab('coupons', document.querySelector('.mi[onclick*="coupons"]'));
+  showTab('coupons', 'Kuponlar');
   setTimeout(()=>{
     const el=document.getElementById('personal-search');
     if(el){ el.value=phone||name; el.dispatchEvent(new Event('input')); }
@@ -4644,15 +4789,18 @@ async function loadCourierPanel(){
 }
 
 // ── YARDIMCILAR ─────────────────────────────────────────────────────────────
-window.showTab=(id,el)=>{
+window.showTab=(id,elOrTitle)=>{
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('pghead').innerText=el.innerText.trim();
+  const title = (typeof elOrTitle === 'string') ? elOrTitle : (elOrTitle?.innerText?.trim() || '');
+  if(title) document.getElementById('pghead').innerText = title;
+  const fab = document.getElementById('home-fab');
+  if(fab) fab.style.display = (id==='home-screen') ? 'none' : 'flex';
   if(id==='products') fetchProducts();
-  if(id==='pos-screen') initPos();
-  else if(typeof stopPos==='function') stopPos();
+  if(id==='pos-masalar') initPosMasalar(); else if(typeof stopPosMasalar==='function') stopPosMasalar();
+  if(id==='pos-gelal') initPosGelAl(); else if(typeof stopPosGelAl==='function') stopPosGelAl();
+  if(id==='pos-paket') initPosPaket(); else if(typeof stopPosPaket==='function') stopPosPaket();
+  if(id==='callerid-settings') loadCallerIdSettings();
   if(id==='coupons')  fetchCoupons();
   if(id==='campaigns') { fetchCampaigns(); fetchSliders(); }
   if(id==='customers') fetchCustomers();
@@ -4686,9 +4834,11 @@ window.loadBusinessSettings = async () => {
   try{
     const snap = await getDoc(doc(db,'restaurants',TENANT_ID,'settings','business'));
     const d = snap.exists() ? snap.data() : {};
+    document.getElementById('bs-name').value       = d.name      || '';
     document.getElementById('bs-phone').value     = d.phone     || '';
     document.getElementById('bs-whatsapp').value   = d.whatsapp || '';
     document.getElementById('bs-address').value    = d.address  || '';
+    document.getElementById('bs-mapslink').value    = d.mapsLink || '';
     document.getElementById('bs-instagram').value  = d.instagram|| '';
     document.getElementById('bs-facebook').value   = d.facebook || '';
     document.getElementById('bs-iban').value       = d.iban     || '';
@@ -4696,11 +4846,32 @@ window.loadBusinessSettings = async () => {
   }catch(e){ console.warn('İşletme ayarları yüklenemedi', e); }
 };
 
+// Panelin kendi arayüzünü (başlık, kenar çubuğu, bildirim önizlemeleri) girilen
+// işletme adına göre günceller — restaurant_admins ile giriş yapılan her işletme
+// için otomatik çalışır, kod değişikliği gerekmez.
+window.loadBizBranding = async () => {
+  try{
+    const snap = await getDoc(doc(db,'restaurants',TENANT_ID,'settings','business'));
+    BIZ = snap.exists() ? snap.data() : {};
+  }catch(e){ console.warn('İşletme markalaması yüklenemedi', e); BIZ = {}; }
+  applyBizBranding();
+};
+window.applyBizBranding = () => {
+  const name = BIZ.name || 'İşletme';
+  document.title = name + ' – Mutfak Paneli';
+  const brandEl = document.getElementById('sidebar-brand');
+  if(brandEl) brandEl.innerHTML = name.toUpperCase() + '<br><span>MUTFAK PANELİ</span>';
+  const pb1 = document.getElementById('push-preview-biz'); if(pb1) pb1.innerText = name + ' • Şimdi';
+  const pb2 = document.getElementById('push-preview-biz2'); if(pb2) pb2.innerText = name + ' • şimdi';
+};
+
 window.saveBusinessSettings = async () => {
   const data = {
+    name:      document.getElementById('bs-name').value.trim(),
     phone:     document.getElementById('bs-phone').value.trim(),
     whatsapp:  document.getElementById('bs-whatsapp').value.trim().replace(/\D/g,''),
     address:   document.getElementById('bs-address').value.trim(),
+    mapsLink:  document.getElementById('bs-mapslink').value.trim(),
     instagram: document.getElementById('bs-instagram').value.trim(),
     facebook:  document.getElementById('bs-facebook').value.trim(),
     iban:      document.getElementById('bs-iban').value.trim(),
@@ -4710,6 +4881,8 @@ window.saveBusinessSettings = async () => {
   const statusEl = document.getElementById('bs-status');
   try{
     await setDoc(doc(db,'restaurants',TENANT_ID,'settings','business'), data, { merge:true });
+    BIZ = {...BIZ, ...data};
+    applyBizBranding();
     statusEl.style.display='block'; statusEl.style.background='#eafaf1'; statusEl.style.color='#27ae60';
     statusEl.innerText='✅ İşletme bilgileri kaydedildi!';
     toast('✅ İşletme bilgileri güncellendi');
@@ -6003,7 +6176,7 @@ window.switchTelafiTab = (tab) => {
 };
 
 window.updateTelafiMethodStyle = () => {
-  ['sms','push'].forEach(m => {
+  ['wa','push'].forEach(m => {
     const checked = document.getElementById(`telafi-method-${m}`).checked;
     const lbl = document.getElementById(`telafi-method-${m}-label`);
     lbl.style.borderColor = checked ? '#9b59b6' : '#ddd';
@@ -6011,6 +6184,11 @@ window.updateTelafiMethodStyle = () => {
     lbl.style.color       = checked ? '#8e44ad' : '#555';
   });
 };
+
+function openWhatsAppTo(phone, message){
+  const cleanPhone = '90' + String(phone||'').replace(/\D/g,'').replace(/^0/,'').replace(/^90/,'');
+  window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+}
 
 window.showTelafiModal = (complaintId, phone, name) => {
   document.getElementById('telafi-complaint-id').value = complaintId;
@@ -6024,7 +6202,7 @@ window.showTelafiModal = (complaintId, phone, name) => {
   document.getElementById('telafi-result').style.display = 'none';
   document.getElementById('telafi-send-btn').disabled = false;
   document.getElementById('telafi-send-btn').innerText = '📤 Gönder';
-  document.getElementById('telafi-method-sms').checked = true;
+  document.getElementById('telafi-method-wa').checked = true;
   document.getElementById('telafi-method-push').checked = false;
   switchTelafiTab('kupon');
   updateTelafiMethodStyle();
@@ -6035,13 +6213,13 @@ window.sendTelafiCoupon = async () => {
   const phone      = document.getElementById('telafi-phone').value;
   const name       = document.getElementById('telafi-customer-name').innerText.split('(')[0].trim();
   const message    = document.getElementById('telafi-message').value.trim();
-  const viaSms     = document.getElementById('telafi-method-sms').checked;
+  const viaWa      = document.getElementById('telafi-method-wa').checked;
   const viaPush    = document.getElementById('telafi-method-push').checked;
   const res        = document.getElementById('telafi-result');
   const btn        = document.getElementById('telafi-send-btn');
   const isKupon    = document.getElementById('telafi-section-kupon').style.display !== 'none';
 
-  if(!viaSms && !viaPush){ toast('❌ En az bir gönderim yöntemi seçin',true); return; }
+  if(!viaWa && !viaPush){ toast('❌ En az bir gönderim yöntemi seçin',true); return; }
 
   btn.disabled = true; btn.innerText = 'Gönderiliyor...';
   res.style.display = 'none';
@@ -6069,13 +6247,9 @@ window.sendTelafiCoupon = async () => {
 
       const fullMsg = message + (message ? `\nKupon kodunuz: ${code}` : `Kupon kodunuz: ${code}`);
 
-      if(viaSms) {
-        const smsResp = await fetch('https://netgsm-otp.donerciismal.workers.dev/', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ phone, message: fullMsg + ' - Dönerci İsmail' })
-        });
-        const smsData = await smsResp.json();
-        resultLines.push(smsData.code==='00'||smsData.success ? '📱 SMS gönderildi' : '⚠️ SMS gönderilemedi');
+      if(viaWa) {
+        openWhatsAppTo(phone, fullMsg + ' - ' + (BIZ.name || 'İşletmeniz'));
+        resultLines.push('💬 WhatsApp açıldı — mesajı göndermeyi unutmayın');
       }
       if(viaPush) {
         const custSnap = await getDocs(query(collection(db,'restaurants',TENANT_ID,'phone_customers'), where('phone','==',phone)));
@@ -6100,13 +6274,9 @@ window.sendTelafiCoupon = async () => {
 
       const ptsMsg = message + (message ? `\n${pts} puan hesabınıza eklendi.` : `${pts} puan hesabınıza eklendi.`);
 
-      if(viaSms) {
-        const smsResp = await fetch('https://netgsm-otp.donerciismal.workers.dev/', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ phone, message: ptsMsg + ' - Dönerci İsmail' })
-        });
-        const smsData = await smsResp.json();
-        resultLines.push(smsData.code==='00'||smsData.success ? '📱 SMS gönderildi' : '⚠️ SMS gönderilemedi');
+      if(viaWa) {
+        openWhatsAppTo(phone, ptsMsg + ' - ' + (BIZ.name || 'İşletmeniz'));
+        resultLines.push('💬 WhatsApp açıldı — mesajı göndermeyi unutmayın');
       }
       if(viaPush) {
         const tokens = (custSnap.docs[0].data().fcmTokenlar||custSnap.docs[0].data().fcmTokens||[]).filter(Boolean);
@@ -8181,12 +8351,16 @@ input:checked+.pm-big-slider:before{transform:translateX(26px);}
       <h4 style="margin:0 0 4px;color:var(--dark);">🏢 İşletme Bilgileri</h4>
       <p style="font-size:12px;color:#aaa;margin:0 0 18px;">Burada girilen bilgiler müşteri uygulamasındaki telefon, WhatsApp ve sosyal medya alanlarında otomatik olarak kullanılır.</p>
       <div class="mform" style="flex-direction:column;gap:14px;">
+        <div class="fg"><label>İşletme Adı (uygulama başlığı, fişler ve bildirimlerde kullanılır)</label>
+          <input type="text" id="bs-name" placeholder="Örn: Dönerci İsmail" style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;"></div>
         <div class="fg"><label>Sipariş Hattı (Telefon)</label>
           <input type="tel" id="bs-phone" placeholder="0224 246 61 20" style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;"></div>
         <div class="fg"><label>WhatsApp Numarası (ülke kodlu, boşluksuz — ör: 905xxxxxxxxx)</label>
           <input type="text" id="bs-whatsapp" placeholder="905xxxxxxxxx" style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;"></div>
         <div class="fg"><label>Adres</label>
           <textarea id="bs-address" rows="2" style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;resize:vertical;box-sizing:border-box;"></textarea></div>
+        <div class="fg"><label>Google Haritalar Konum Linki ("Yol Tarifi Al" butonu için)</label>
+          <input type="text" id="bs-mapslink" placeholder="https://maps.app.goo.gl/..." style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;"></div>
         <div style="display:flex;gap:14px;">
           <div class="fg" style="flex:1;"><label>Instagram Linki</label>
             <input type="text" id="bs-instagram" placeholder="https://instagram.com/..." style="padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;width:100%;box-sizing:border-box;"></div>
