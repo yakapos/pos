@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YakaPOS — Platform Yönetimi</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1C1B1A;--cream:#F7F3EC;--amber:#E8A23D;--amber-deep:#C97D1E;--gray:#6B6660;--line:rgba(28,27,26,.12);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);}
+  h1,h2,h3{font-family:'Poppins',sans-serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 24px;}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+  header h1{font-size:22px;}
+  .logout-btn{background:none;border:1px solid var(--line);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--gray);}
+  .tabs{display:flex;gap:8px;margin-bottom:24px;}
+  .tab-btn{padding:10px 18px;border-radius:9px;border:1px solid var(--line);background:white;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--gray);}
+  .tab-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .card{background:white;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  .card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;}
+  .card h3{font-size:16px;margin-bottom:4px;}
+  .card .meta{font-size:12.5px;color:var(--gray);line-height:1.7;}
+  .badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+  .badge.new{background:#eafaf1;color:#27ae60;}
+  .badge.converted{background:#eef2f7;color:#34495e;}
+  .badge.active{background:#eafaf1;color:#27ae60;}
+  .badge.expired{background:#fdedec;color:#c0392b;}
+  .badge.suspended{background:#fff6e6;color:#e67e22;}
+  .btn{padding:9px 16px;border:none;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:var(--cream);}
+  .btn-ghost{background:#f0ede6;color:var(--ink);}
+  .empty{color:var(--gray);font-size:14px;text-align:center;padding:40px 0;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+  .form-row.full{grid-template-columns:1fr;}
+  .form-row label{font-size:12px;font-weight:600;color:var(--gray);display:block;margin-bottom:5px;}
+  .form-row input,.form-row select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(28,27,26,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:white;border-radius:16px;padding:28px;max-width:460px;width:100%;}
+  .modal-box h3{margin-bottom:16px;}
+  #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+  .login-box{background:white;border-radius:16px;padding:36px;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.15);}
+  .login-box input{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;margin-top:6px;margin-bottom:14px;font-size:14px;}
+  .login-box label{font-size:12.5px;font-weight:600;color:var(--gray);}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h2 style="margin-bottom:6px;">Platform Yönetimi</h2>
+    <p style="color:var(--gray);font-size:13px;margin-bottom:20px;">Sadece platform sahibi hesabıyla girilebilir.</p>
+    <label>E-posta</label>
+    <input type="email" id="pa-email">
+    <label>Şifre</label>
+    <input type="password" id="pa-pass">
+    <button class="btn btn-primary" style="width:100%;padding:12px;" onclick="paLogin()">Giriş Yap</button>
+    <div id="pa-login-err" style="display:none;color:#c0392b;font-size:12.5px;margin-top:12px;font-weight:600;"></div>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none;">
+  <div class="wrap">
+    <header>
+      <h1>🗂️ YakaPOS Platform Yönetimi</h1>
+      <button class="logout-btn" onclick="paLogout()">Çıkış Yap</button>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="paShowPanel('applications')" id="tabbtn-applications">📥 Başvurular</button>
+      <button class="tab-btn" onclick="paShowPanel('tenants')" id="tabbtn-tenants">🏪 Kiracılar & Lisanslar</button>
+    </div>
+
+    <div id="panel-applications" class="panel active">
+      <div id="applications-list"></div>
+    </div>
+
+    <div id="panel-tenants" class="panel">
+      <div style="margin-bottom:14px;">
+        <button class="btn btn-primary" onclick="paOpenNewTenantModal()">+ Yeni Kiracı Ekle</button>
+      </div>
+      <div id="tenants-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BAŞVURUYU KİRACIYA ÇEVİR / YENİ KİRACI EKLE -->
+<div class="modal-overlay" id="tenant-modal">
+  <div class="modal-box">
+    <h3 id="tenant-modal-title">Yeni Kiracı Oluştur</h3>
+    <div class="form-row full">
+      <div>
+        <label>Restoran Kimliği (slug — küçük harf, tire ile, benzersiz olmalı)</label>
+        <input type="text" id="tn-slug" placeholder="ornek-restoran">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>İşletme Adı</label>
+        <input type="text" id="tn-name" placeholder="Örnek Restoran">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>Lisans Tipi</label>
+        <select id="tn-plan">
+          <option value="monthly">Aylık</option>
+          <option value="yearly">Yıllık</option>
+          <option value="lifetime">Süresiz</option>
+        </select>
+      </div>
+      <div>
+        <label>Tutar (₺)</label>
+        <input type="number" id="tn-amount" placeholder="0">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>Not (opsiyonel)</label>
+        <input type="text" id="tn-note" placeholder="ör: Havale ile ödendi, 05.09.2026">
+      </div>
+    </div>
+    <div style="background:#fff6e6;border-radius:8px;padding:12px 14px;margin-top:16px;font-size:12px;color:#8a6116;line-height:1.6;">
+      ⚠️ Bu form sadece Firestore kaydını oluşturur. Müşterinin panele giriş yapabilmesi için ayrıca:<br>
+      1) Firebase Console → Authentication → Add User ile giriş hesabını oluşturun,<br>
+      2) Oluşan User UID'yi kopyalayıp aşağıya girin.
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>Kullanıcı UID (Firebase Console'dan)</label>
+        <input type="text" id="tn-uid" placeholder="ör: b5go9C1jS1SzJws4neET0cKADnH2">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="paCloseTenantModal()">İptal</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="paSaveTenant()">Kaydet</button>
+    </div>
+    <div id="tenant-modal-msg" style="display:none;margin-top:12px;font-size:12.5px;font-weight:600;"></div>
+  </div>
+</div>
+
+<!-- LİSANS YENİLE / DURUM DEĞİŞTİR -->
+<div class="modal-overlay" id="license-modal">
+  <div class="modal-box">
+    <h3>Lisansı Güncelle</h3>
+    <div class="form-row">
+      <div>
+        <label>Lisans Tipi</label>
+        <select id="lic-plan">
+          <option value="monthly">Aylık</option>
+          <option value="yearly">Yıllık</option>
+          <option value="lifetime">Süresiz</option>
+        </select>
+      </div>
+      <div>
+        <label>Durum</label>
+        <select id="lic-status">
+          <option value="active">Aktif</option>
+          <option value="suspended">Askıya Alındı</option>
+          <option value="expired">Süresi Doldu</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>Tutar (₺)</label>
+        <input type="number" id="lic-amount">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label>Not</label>
+        <input type="text" id="lic-note">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="paCloseLicenseModal()">İptal</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="paSaveLicense()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, serverTimestamp, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const fbCfg = {
+  apiKey:"AIzaSyB8_i0JrMO5RFg49eqeL2bj_CP_BgxnJdM",
+  authDomain:"yakapos-7ccf2.firebaseapp.com",
+  projectId:"yakapos-7ccf2",
+  storageBucket:"yakapos-7ccf2.firebasestorage.app",
+  messagingSenderId:"1073439800098",
+  appId:"1:1073439800098:web:f58e7b6ec6dc721aa0837b"
+};
+const app  = initializeApp(fbCfg);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+window.paLogin = async () => {
+  const email = document.getElementById('pa-email').value.trim();
+  const pass  = document.getElementById('pa-pass').value;
+  const errEl = document.getElementById('pa-login-err');
+  errEl.style.display='none';
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+  }catch(e){
+    errEl.textContent = 'Giriş başarısız: e-posta veya şifre hatalı.';
+    errEl.style.display='block';
+  }
+};
+window.paLogout = () => signOut(auth);
+
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('app-screen').style.display='none';
+    return;
+  }
+  // Platform admin mi kontrol et
+  try{
+    const snap = await getDoc(doc(db,'platform_admins',user.uid));
+    if(!snap.exists()){
+      document.getElementById('pa-login-err').textContent = 'Bu hesabın platform yönetimine erişimi yok.';
+      document.getElementById('pa-login-err').style.display = 'block';
+      await signOut(auth);
+      return;
+    }
+  }catch(e){
+    document.getElementById('pa-login-err').textContent = 'Yetki kontrolü başarısız: '+e.message;
+    document.getElementById('pa-login-err').style.display = 'block';
+    await signOut(auth);
+    return;
+  }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  loadApplications();
+  loadTenants();
+});
+
+window.paShowPanel = (key) => {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+key).classList.add('active');
+  document.getElementById('tabbtn-'+key).classList.add('active');
+};
+
+// ── BAŞVURULAR ──────────────────────────────────────────────
+async function loadApplications(){
+  const el = document.getElementById('applications-list');
+  el.innerHTML = '<div class="empty">Yükleniyor...</div>';
+  try{
+    const q = query(collection(db,'platform_applications'), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    if(snap.empty){ el.innerHTML = '<div class="empty">Henüz başvuru yok.</div>'; return; }
+    el.innerHTML = snap.docs.map(d=>{
+      const a = {id:d.id, ...d.data()};
+      const date = a.createdAt?.toDate ? a.createdAt.toDate().toLocaleString('tr-TR') : '-';
+      const statusBadge = a.status==='converted'
+        ? '<span class="badge converted">Kiracıya Çevrildi</span>'
+        : '<span class="badge new">Yeni</span>';
+      return `<div class="card">
+        <div class="card-row">
+          <div>
+            <h3>${a.business||'(İşletme adı yok)'} ${statusBadge}</h3>
+            <div class="meta">
+              👤 ${a.name||'-'} · 📞 ${a.phone||'-'} ${a.city?('· 📍 '+a.city):''}<br>
+              ${a.note ? ('📝 '+a.note+'<br>') : ''}
+              🕒 ${date}
+            </div>
+          </div>
+          ${a.status!=='converted' ? `<button class="btn btn-primary" onclick='paOpenNewTenantModal(${JSON.stringify(JSON.stringify(a))})'>Kiracıya Çevir</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    el.innerHTML = `<div class="empty">Yüklenemedi: ${e.message}</div>`;
+  }
+}
+
+// ── KİRACILAR & LİSANSLAR ──────────────────────────────────────────────
+async function loadTenants(){
+  const el = document.getElementById('tenants-list');
+  el.innerHTML = '<div class="empty">Yükleniyor...</div>';
+  try{
+    const snap = await getDocs(collection(db,'restaurants'));
+    if(snap.empty){ el.innerHTML = '<div class="empty">Henüz kiracı yok.</div>'; return; }
+    el.innerHTML = snap.docs.map(d=>{
+      const r = {id:d.id, ...d.data()};
+      const lic = r.license || {};
+      const statusClass = lic.status || 'active';
+      const expiry = lic.expiryDate?.toDate ? lic.expiryDate.toDate().toLocaleDateString('tr-TR') : (lic.plan==='lifetime' ? 'Süresiz' : '-');
+      const planLabel = {monthly:'Aylık', yearly:'Yıllık', lifetime:'Süresiz'}[lic.plan] || 'Tanımsız';
+      return `<div class="card">
+        <div class="card-row">
+          <div>
+            <h3>${r.name || d.id} <span class="badge ${statusClass}">${lic.status==='active'||!lic.status?'Aktif':lic.status==='suspended'?'Askıda':'Süresi Doldu'}</span></h3>
+            <div class="meta">
+              🔑 ID: ${d.id} · 📦 Plan: ${planLabel} · 📅 Bitiş: ${expiry}${lic.amount ? (' · 💰 '+lic.amount+' ₺') : ''}<br>
+              ${lic.note ? ('📝 '+lic.note) : ''}
+            </div>
+          </div>
+          <button class="btn btn-ghost" onclick='paOpenLicenseModal(${JSON.stringify(d.id)})'>Lisansı Düzenle</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    el.innerHTML = `<div class="empty">Yüklenemedi: ${e.message}</div>`;
+  }
+}
+
+// ── YENİ KİRACI MODALI ──────────────────────────────────────────────
+let _currentApplicationId = null;
+window.paOpenNewTenantModal = (appJson) => {
+  document.getElementById('tenant-modal-msg').style.display='none';
+  document.getElementById('tn-slug').value='';
+  document.getElementById('tn-name').value='';
+  document.getElementById('tn-plan').value='monthly';
+  document.getElementById('tn-amount').value='';
+  document.getElementById('tn-note').value='';
+  document.getElementById('tn-uid').value='';
+  _currentApplicationId = null;
+  if(appJson){
+    const a = JSON.parse(appJson);
+    _currentApplicationId = a.id;
+    document.getElementById('tn-name').value = a.business || '';
+    document.getElementById('tn-note').value = `Başvuran: ${a.name||''} (${a.phone||''})`;
+    document.getElementById('tenant-modal-title').innerText = 'Başvuruyu Kiracıya Çevir';
+  } else {
+    document.getElementById('tenant-modal-title').innerText = 'Yeni Kiracı Oluştur';
+  }
+  document.getElementById('tenant-modal').classList.add('show');
+};
+window.paCloseTenantModal = () => document.getElementById('tenant-modal').classList.remove('show');
+
+window.paSaveTenant = async () => {
+  const slug = document.getElementById('tn-slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-');
+  const name = document.getElementById('tn-name').value.trim();
+  const plan = document.getElementById('tn-plan').value;
+  const amount = Number(document.getElementById('tn-amount').value) || 0;
+  const note = document.getElementById('tn-note').value.trim();
+  const uid = document.getElementById('tn-uid').value.trim();
+  const msg = document.getElementById('tenant-modal-msg');
+
+  if(!slug || !name){
+    msg.style.display='block'; msg.style.color='#c0392b';
+    msg.innerText = '❌ Restoran kimliği ve işletme adı zorunlu.';
+    return;
+  }
+
+  const now = new Date();
+  let expiryDate = null;
+  if(plan==='monthly'){ expiryDate = new Date(now); expiryDate.setMonth(expiryDate.getMonth()+1); }
+  if(plan==='yearly'){ expiryDate = new Date(now); expiryDate.setFullYear(expiryDate.getFullYear()+1); }
+
+  try{
+    await setDoc(doc(db,'restaurants',slug), {
+      name,
+      license: {
+        plan, status:'active', amount, note,
+        startDate: serverTimestamp(),
+        expiryDate: expiryDate
+      }
+    }, {merge:true});
+
+    await setDoc(doc(db,'restaurants',slug,'settings','business'), { name }, {merge:true});
+
+    if(uid){
+      await setDoc(doc(db,'restaurant_admins',uid), { restaurantId: slug });
+    }
+
+    if(_currentApplicationId){
+      await updateDoc(doc(db,'platform_applications',_currentApplicationId), { status:'converted', tenantId: slug });
+    }
+
+    msg.style.display='block'; msg.style.color='#27ae60';
+    msg.innerText = uid
+      ? '✅ Kiracı oluşturuldu ve giriş yetkisi tanımlandı.'
+      : '✅ Kiracı oluşturuldu — giriş yetkisi için Kullanıcı UID girmeyi unutmayın.';
+
+    loadTenants();
+    loadApplications();
+    setTimeout(()=>{ paCloseTenantModal(); }, 1400);
+  }catch(e){
+    msg.style.display='block'; msg.style.color='#c0392b';
+    msg.innerText = '❌ Hata: '+e.message;
+  }
+};
+
+// ── LİSANS DÜZENLEME MODALI ──────────────────────────────────────────────
+let _currentTenantId = null;
+window.paOpenLicenseModal = async (tenantId) => {
+  _currentTenantId = tenantId;
+  try{
+    const snap = await getDoc(doc(db,'restaurants',tenantId));
+    const lic = snap.exists() ? (snap.data().license||{}) : {};
+    document.getElementById('lic-plan').value = lic.plan || 'monthly';
+    document.getElementById('lic-status').value = lic.status || 'active';
+    document.getElementById('lic-amount').value = lic.amount || '';
+    document.getElementById('lic-note').value = lic.note || '';
+  }catch(e){}
+  document.getElementById('license-modal').classList.add('show');
+};
+window.paCloseLicenseModal = () => document.getElementById('license-modal').classList.remove('show');
+window.paSaveLicense = async () => {
+  const plan = document.getElementById('lic-plan').value;
+  const status = document.getElementById('lic-status').value;
+  const amount = Number(document.getElementById('lic-amount').value) || 0;
+  const note = document.getElementById('lic-note').value.trim();
+
+  const now = new Date();
+  let expiryDate = null;
+  if(plan==='monthly'){ expiryDate = new Date(now); expiryDate.setMonth(expiryDate.getMonth()+1); }
+  if(plan==='yearly'){ expiryDate = new Date(now); expiryDate.setFullYear(expiryDate.getFullYear()+1); }
+
+  try{
+    await setDoc(doc(db,'restaurants',_currentTenantId), {
+      license: { plan, status, amount, note, expiryDate, renewedAt: serverTimestamp() }
+    }, {merge:true});
+    paCloseLicenseModal();
+    loadTenants();
+  }catch(e){
+    alert('Hata: '+e.message);
+  }
+};
+</script>
+</body>
+</html>
